@@ -1,66 +1,50 @@
 import React, { useState } from "react";
 
- function TodoApp() {
-  const [todos, setTodos] = useState([]);      // store all todos
-  const [input, setInput] = useState("");      // current input value
-  const [editId, setEditId] = useState(null);  // which todo is being edited
+const TodoApp = () => {
+const [input, setInput] = useState("");
+const [todos, setTodos] = useState([]);
+const [editId, setEditId] = useState(null);
 
-  // Add or Update Todo
+  const handleAdd = () => {
+    if (!input.trim()) return;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;                  // ignore empty input
-
-    if (editId !== null) {
-      // update existing todo
-      const updated = todos.map((t, i) =>
-        i === editId ? { ...t, text: input } : t
-      );
-      setTodos(updated);
+    if (editId) {
+      setTodos(todos.map(t => t.id === editId ? { ...t, text: input } : t));
       setEditId(null);
     } else {
-      // add new todo
-      setTodos([...todos, { text: input }]);
+      setTodos([...todos, { id: Date.now(), text: input }]);
     }
 
-    setInput(""); // clear input
+    setInput("");
   };
 
-  // Edit Todo
-  const handleEdit = (index) => {
-    setInput(todos[index].text);
-    setEditId(index);
-  };
+  const handleDelete = (id) => setTodos(todos.filter(t => t.id !== id));
 
-  // Delete Todo
-  const handleDelete = (index) => {
-    setTodos(todos.filter((_, i) => i !== index));
+  const handleEdit = (todo) => {
+    setEditId(todo.id);
+    setInput(todo.text);
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: 50 }}>
-      <h2>Todo List</h2>
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          placeholder="Enter a task..."
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button type="submit">{editId !== null ? "Update" : "Add"}</button>
-      </form>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Type something..."
+      />
+      <button onClick={handleAdd}>{editId ? "Update" : "Add"}</button>
 
       <ul style={{ listStyle: "none", padding: 0 }}>
-        {todos.map((todo, index) => (
-          <li key={index}>
-            {todo.text}
-            <button onClick={() => handleEdit(index)}>Edit</button>
-            <button onClick={() => handleDelete(index)}>Delete</button>
+        {todos.map((t) => (
+          <li key={t.id}>
+            {t.text}{" "}
+            <button onClick={() => handleEdit(t)}>Edit</button>
+            <button onClick={() => handleDelete(t.id)}>Delete</button>
           </li>
         ))}
       </ul>
     </div>
   );
-}
-export default TodoApp
+};
+
+export default TodoApp;

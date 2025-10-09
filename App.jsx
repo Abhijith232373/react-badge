@@ -10,8 +10,8 @@ function App() {
     <>
     {/* <Count/>  */}
     {/* <Form/> */}
-     <TodoApp/>
-     {/* <ColorGrid/> */}
+     {/* <TodoApp/> */}
+     <ColorGrid/>
      {/* <Fetch/> */}
     </>
   )
